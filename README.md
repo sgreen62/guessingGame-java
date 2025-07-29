@@ -12,11 +12,26 @@ public class Game {
     public String makeGuess(int guess) {
         attempts++;
         if (guess == targetNumber) {
-            return "Correct! You guessed it in " + attempts + " tries.";
-        } else if (guess < targetNumber) {
-            return "Too low. Try again.";
+            String message = "Correct! You guessed it in " + attempts + " tries.\n";
+            if (attempts <= 3) {
+                message += "Great work! You are a mathematical wizard.";
+            } else if (attempts <= 7) {
+                message += "Not too bad! You’ve got some potential.";
+            } else {
+                message += "What took you so long?";
+            }
+            return message;
         } else {
-            return "Too high. Try again.";
+            int difference = guess - targetNumber;
+            if (difference > 10) {
+                return "Way too high! Guess again.";
+            } else if (difference > 0) {
+                return "Too high! Guess again.";
+            } else if (difference < -10) {
+                return "Way too low! Guess again.";
+            } else {
+                return "Too low! Guess again.";
+            }
         }
     }
 }
