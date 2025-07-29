@@ -1,71 +1,85 @@
-package guessingGame;
+#tictactoe.java
 
-public class Game {
-    private int targetNumber;
-    private int attempts;
-
-    public Game() {
-        targetNumber = (int)(Math.random() * 100) + 1;
-        attempts = 0;
-    }
-
-    public String makeGuess(int guess) {
-        attempts++;
-        if (guess == targetNumber) {
-            String message = "Correct! You guessed it in " + attempts + " tries.\n";
-            if (attempts <= 3) {
-                message += "Great work! You are a mathematical wizard.";
-            } else if (attempts <= 7) {
-                message += "Not too bad! You’ve got some potential.";
-            } else {
-                message += "What took you so long?";
-            }
-            return message;
-        } else {
-            int difference = guess - targetNumber;
-            if (difference > 10) {
-                return "Way too high! Guess again.";
-            } else if (difference > 0) {
-                return "Too high! Guess again.";
-            } else if (difference < -10) {
-                return "Way too low! Guess again.";
-            } else {
-                return "Too low! Guess again.";
-            }
-        }
-    }
-}
-
-
-
-#GuessNumbersApp
-
-package guessingGame;
+package tictactoe;
 
 import java.util.Scanner;
 
-public class GuessNumberApp {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Game game = new Game();
+public class TicTacToe {
+    private String[][] board = new String[3][3];
+    private String currentPlayerMark = "X";
 
-        System.out.println("Welcome to the Number Guessing Game!");
-        System.out.println("Guess a number between 1 and 100.");
+    public void displayWelcomeMessage() {
+        System.out.println("Welcome to Tic Tac Toe!");
+    }
 
-        boolean guessedCorrectly = false;
-
-        while (!guessedCorrectly) {
-            System.out.print("Enter your guess: ");
-            int guess = scanner.nextInt();
-
-            String result = game.makeGuess(guess);
-            System.out.println(result);
-
-            if (result.startsWith("Correct!")) {
-                guessedCorrectly = true;
+    public void displayGrid() {
+        System.out.println();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                String cell = board[i][j];
+                System.out.print(cell == null ? "_" : cell);
+                if (j < 2) System.out.print(" | ");
             }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public void startGame() {
+        Scanner scanner = new Scanner(System.in);
+        int moves = 0;
+        boolean hasWinner = false;
+
+        while (moves < 9 && !hasWinner) {
+            displayGrid();
+            takeTurn(scanner);
+            hasWinner = checkForWinner();
+            if (hasWinner) {
+                displayGrid();
+                System.out.println("Player " + currentPlayerMark + " wins!");
+                return;
+            }
+            moves++;
+            currentPlayerMark = currentPlayerMark.equals("X") ? "O" : "X";
         }
 
-        scanner.close();
+        if (!hasWinner) {
+            displayGrid();
+            System.out.println("It's a tie!");
+        }
+    }
+
+    public void takeTurn(Scanner scanner) {
+        int row, col;
+        while (true) {
+            System.out.print("Player " + currentPlayerMark + ", enter row (0-2): ");
+            row = scanner.nextInt();
+            System.out.print("Enter column (0-2): ");
+            col = scanner.nextInt();
+
+            if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+                if (board[row][col] == null) {
+                    board[row][col] = currentPlayerMark;
+                    break;
+                } else {
+                    System.out.println("That spot is already taken. Try again.");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter numbers between 0 and 2.");
+            }
+        }
+    }
+
+    public boolean checkForWinner() {
+        for (int i = 0; i < 3; i++) {
+            if (match(board[i][0], board[i][1], board[i][2])) return true;
+            if (match(board[0][i], board[1][i], board[2][i])) return true;
+        }
+        return match(board[0][0], board[1][1], board[2][2]) ||
+               match(board[0][2], board[1][1], board[2][0]);
+    }
+
+    private boolean match(String a, String b, String c) {
+        return a != null && a.equals(b) && b.equals(c);
     }
 }
