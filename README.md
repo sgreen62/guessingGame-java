@@ -1,98 +1,65 @@
-#tictactoe.java
+package guessingGame;
 
-package tictactoe;
+public class Game {
+    private int number;
+    private int guessNumber;
+    private int counter;
+    private int lastGuess = -1; // store the previous guess
 
-import java.util.Scanner;
+    public void generateNumberToBeGuessed() {
+        number = (int)(Math.random() * 100) + 1;
+        counter = 0;
+        lastGuess = -1;
+    }
 
-public class TicTacToe {
-    private String[][] board = new String[3][3];
-    private String currentPlayerMark = "X";
+    public void makeGuess(int guess) {
+        guessNumber = guess;
+        counter++;
+    }
+
+    public boolean isCorrectGuess() {
+        return guessNumber == number;
+    }
 
     public void displayWelcomeMessage() {
-        System.out.println("Welcome to Tic Tac Toe!");
+        System.out.println("Welcome to the guessing game!");
     }
 
-    public void displayGrid() {
-        System.out.println();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                String cell = board[i][j];
-                System.out.print(cell == null ? "_" : cell);
-                if (j < 2) System.out.print(" | ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+    public void displayPleaseGuessMessage() {
+        System.out.println("Try to guess the number (between 1 and 100):");
     }
 
-    public void startGame() {
-        Scanner scanner = new Scanner(System.in);
-        int moves = 0;
-        boolean hasWinner = false;
-
-        while (moves < 9 && !hasWinner) {
-            displayGrid();
-            takeTurn(scanner);
-            hasWinner = checkForWinner();
-            if (hasWinner) {
-                displayGrid();
-                System.out.println("Player " + currentPlayerMark + " wins!");
-                return;
-            }
-            moves++;
-            currentPlayerMark = currentPlayerMark.equals("X") ? "O" : "X";
-        }
-
-        if (!hasWinner) {
-            displayGrid();
-            System.out.println("It's a tie!");
+    public void displayCorrectGuessMessage() {
+        System.out.println("Nice! You got it. The number was " + number + ".");
+        if (counter <= 3) {
+            System.out.println("Great work! You are a mathematical wizard.");
+        } else if (counter <= 7) {
+            System.out.println("Not too bad! You’ve got some potential.");
+        } else {
+            System.out.println("What took you so long?");
         }
     }
 
-    public void takeTurn(Scanner scanner) {
-        int row, col;
-        while (true) {
-            System.out.print("Player " + currentPlayerMark + ", enter row (0-2): ");
-            row = scanner.nextInt();
-            System.out.print("Enter column (0-2): ");
-            col = scanner.nextInt();
+    public void displayGuessAgainMessage() {
+        if (guessNumber < number) {
+            System.out.println("Too low.");
+        } else {
+            System.out.println("Too high.");
+        }
 
-            if (row >= 0 && row < 3 && col >= 0 && col < 3) {
-                if (board[row][col] == null) {
-                    board[row][col] = currentPlayerMark;
-                    break;
-                } else {
-                    System.out.println("That spot is already taken. Try again.");
-                }
+        if (lastGuess != -1) {
+            int prevDiff = Math.abs(lastGuess - number);
+            int currentDiff = Math.abs(guessNumber - number);
+
+            if (currentDiff < prevDiff) {
+                System.out.println("Warmer.");
+            } else if (currentDiff > prevDiff) {
+                System.out.println("Colder.");
             } else {
-                System.out.println("Invalid input. Please enter numbers between 0 and 2.");
+                System.out.println("Same distance as before.");
             }
         }
-    }
 
-    public boolean checkForWinner() {
-        for (int i = 0; i < 3; i++) {
-            if (match(board[i][0], board[i][1], board[i][2])) return true;
-            if (match(board[0][i], board[1][i], board[2][i])) return true;
-        }
-        return match(board[0][0], board[1][1], board[2][2]) ||
-               match(board[0][2], board[1][1], board[2][0]);
-    }
-
-    private boolean match(String a, String b, String c) {
-        return a != null && a.equals(b) && b.equals(c);
-    }
-}
-
-
-#tictactoeapp.java
-
-package tictactoe;
-
-public class TicTacToeApp {
-    public static void main(String[] args) {
-        TicTacToe game = new TicTacToe();
-        game.displayWelcomeMessage();
-        game.startGame();
+        lastGuess = guessNumber; // update last guess
     }
 }
