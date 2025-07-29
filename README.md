@@ -16,10 +16,7 @@ public class Game {
         } else if (guess < targetNumber) {
             return "Too low. Try again.";
         } else {
-            return "Too high. Try again.";
-        }
-    }
-}
+            return "Too high. Try aga
 
 
 #GuessNumbersApp
