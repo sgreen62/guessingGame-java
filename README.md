@@ -83,3 +83,16 @@ public class TicTacToe {
         return a != null && a.equals(b) && b.equals(c);
     }
 }
+
+
+#tictactoeapp.java
+
+package tictactoe;
+
+public class TicTacToeApp {
+    public static void main(String[] args) {
+        TicTacToe game = new TicTacToe();
+        game.displayWelcomeMessage();
+        game.startGame();
+    }
+}
